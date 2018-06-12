@@ -36,6 +36,7 @@
 use callback::{AppId, Callback};
 use core::cmp::min;
 use core::fmt::{write, Arguments, Result, Write};
+use core::panic::PanicInfo;
 use core::ptr::{read_volatile, write_volatile};
 use core::{slice, str};
 use driver::Driver;
@@ -53,12 +54,10 @@ use returncode::ReturnCode;
 pub unsafe fn panic<L: hil::led::Led, W: Write>(
     led: &mut L,
     writer: &mut W,
-    args: Arguments,
-    file: &'static str,
-    line: u32,
+    panic_info: &PanicInfo,
 ) -> ! {
     panic_begin();
-    panic_banner(writer, args, file, line);
+    panic_banner(writer, panic_info);
     // Flush debug buffer if needed
     flush(writer);
     panic_process_info(writer);
@@ -84,17 +83,16 @@ pub unsafe fn panic_begin() {
 /// Lightweight prints about the current panic and kernel version.
 ///
 /// **NOTE:** The supplied `writer` must be synchronous.
-pub unsafe fn panic_banner<W: Write>(
-    writer: &mut W,
-    args: Arguments,
-    file: &'static str,
-    line: u32,
-) {
-    let _ = writer.write_fmt(format_args!(
-        "\r\n\nKernel panic at {}:{}:\r\n\t\"",
-        file, line
-    ));
-    let _ = write(writer, args);
+pub unsafe fn panic_banner<W: Write>(writer: &mut W, panic_info: &PanicInfo) {
+    if let Some(location) = panic_info.location() {
+        let _ = writer.write_fmt(format_args!(
+            "\r\n\nKernel panic at {}:{}:\r\n\t\"",
+            location.file(),
+            location.line()
+        ));
+    } else {
+        let _ = writer.write_fmt(format_args!("\r\n\nKernel panic:\r\n\t\""));
+    }
     let _ = writer.write_str("\"\r\n");
 
     // Print version of the kernel
