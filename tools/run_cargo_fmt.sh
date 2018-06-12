@@ -44,14 +44,14 @@ if [ "$1" == "diff" ]; then
 	# Just print out diffs and count errors, used by Travis
 	for f in $(find . | grep Cargo.toml); do
 		pushd $(dirname $f) > /dev/null
-		cargo-fmt -- --write-mode=check || let FAIL=FAIL+1
+		cargo-fmt -- --check || let FAIL=FAIL+1
 		popd > /dev/null
 	done
 	exit $FAIL
 else
 	for f in $(find . | grep Cargo.toml); do
 		pushd $(dirname $f) > /dev/null
-		cargo-fmt -- --write-mode=overwrite || let FAIL=FAIL+1
+		cargo-fmt || let FAIL=FAIL+1
 		popd > /dev/null
 	done
 

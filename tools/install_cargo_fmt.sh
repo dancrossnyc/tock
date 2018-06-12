@@ -13,7 +13,7 @@ fi
 #
 # Note: We install a local copy of rustfmt so as not to interfere with any
 # other use of rustfmt on the machine
-RUSTFMT_VERSION=0.6.0
+RUSTFMT_VERSION=0.8.1
 
 # For CI, want to install to a cached travis directory
 if [[ "$CI" == "true" ]]; then
