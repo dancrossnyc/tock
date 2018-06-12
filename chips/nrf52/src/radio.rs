@@ -654,7 +654,9 @@ impl Radio {
     pub fn enable_interrupts(&self) {
         let regs = unsafe { &*self.regs };
         regs.intenset.write(
-            Interrupt::READY::SET + Interrupt::ADDRESS::SET + Interrupt::PAYLOAD::SET
+            Interrupt::READY::SET
+                + Interrupt::ADDRESS::SET
+                + Interrupt::PAYLOAD::SET
                 + Interrupt::END::SET,
         );
     }
@@ -738,14 +740,16 @@ impl Radio {
         // sets the header of PDU TYPE to 1 byte
         // sets the header length to 1 byte
         regs.pcnf0.write(
-            PacketConfiguration0::LFLEN.val(8) + PacketConfiguration0::S0LEN.val(1)
+            PacketConfiguration0::LFLEN.val(8)
+                + PacketConfiguration0::S0LEN.val(1)
                 + PacketConfiguration0::S1LEN::CLEAR
                 + PacketConfiguration0::S1INCL::CLEAR
                 + PacketConfiguration0::PLEN::EIGHT,
         );
 
         regs.pcnf1.write(
-            PacketConfiguration1::WHITEEN::ENABLED + PacketConfiguration1::ENDIAN::LITTLE
+            PacketConfiguration1::WHITEEN::ENABLED
+                + PacketConfiguration1::ENDIAN::LITTLE
                 + PacketConfiguration1::BALEN.val(3)
                 + PacketConfiguration1::STATLEN::CLEAR
                 + PacketConfiguration1::MAXLEN.val(255),

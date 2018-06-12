@@ -4,10 +4,12 @@
 //! * Philip Levis <pal@cs.stanford.edu>
 //! * Date: August 18, 2016
 
-use core::{cell::Cell,
-           ops::{Index, IndexMut}};
-use kernel::{common::regs::{FieldValue, ReadWrite},
-             hil};
+use core::{
+    cell::Cell, ops::{Index, IndexMut},
+};
+use kernel::{
+    common::regs::{FieldValue, ReadWrite}, hil,
+};
 
 #[cfg(feature = "nrf51")]
 const NUM_GPIOTE: usize = 4;

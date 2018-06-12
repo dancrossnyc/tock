@@ -433,8 +433,11 @@ impl Adc {
             // we are inactive, why did we get an interrupt?
             // disable all interrupts, clear status, and just ignore it
             regs.idr.write(
-                Interrupt::TTO::SET + Interrupt::SMTRG::SET + Interrupt::WM::SET
-                    + Interrupt::LOVR::SET + Interrupt::SEOC::SET,
+                Interrupt::TTO::SET
+                    + Interrupt::SMTRG::SET
+                    + Interrupt::WM::SET
+                    + Interrupt::LOVR::SET
+                    + Interrupt::SEOC::SET,
             );
             self.clear_status();
         }
@@ -444,7 +447,10 @@ impl Adc {
     fn clear_status(&self) {
         let regs: &AdcRegisters = unsafe { &*self.registers };
         regs.scr.write(
-            Interrupt::TTO::SET + Interrupt::SMTRG::SET + Interrupt::WM::SET + Interrupt::LOVR::SET
+            Interrupt::TTO::SET
+                + Interrupt::SMTRG::SET
+                + Interrupt::WM::SET
+                + Interrupt::LOVR::SET
                 + Interrupt::SEOC::SET,
         );
     }
@@ -572,7 +578,8 @@ impl Adc {
 
             // wait until buffers are enabled
             timeout = 100000;
-            while !regs.sr
+            while !regs
+                .sr
                 .matches_all(Status::BGREQ::SET + Status::REFBUF::SET + Status::EN::SET)
             {
                 timeout -= 1;
